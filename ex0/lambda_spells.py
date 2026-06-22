@@ -22,15 +22,14 @@ def get_test_spells() -> list[str]:
 
 
 def artifact_sorter(artifacts: list[dict]) -> list[dict]:
-    return sorted(artifacts, key=lambda a: a["power"])
+    return sorted(artifacts, key=lambda a: a["power"], reverse=True)
 
 
 def power_filter(mages: list[dict], min_power: int) -> list[dict]:
-    return list(filter(lambda m: m["power"] > min_power, mages))
+    return list(filter(lambda m: m["power"] >= min_power, mages))
 
 
 def spell_transformer(spells: list[str]) -> list[str]:
-    # return [" ".join(["*", spell, "*"]) for spell in spells]
     return list(map(lambda s: " ".join(["*", s, "*"]), spells))
 
 
@@ -43,12 +42,16 @@ def mage_stats(mages: list[dict]) -> dict:
 
 
 def main() -> None:
-    # print(artifact_sorter(get_test_artifacts()))
+    print("Testing artifacts sorter...")
+    print(artifact_sorter(get_test_artifacts()))
 
-    # print(power_filter(get_test_mages(), 70))
+    print("\nTesting power filter...")
+    print(power_filter(get_test_mages(), 70))
 
-    # print(spell_transformer(get_test_spells()))
+    print("\nTesting spell transformer...")
+    print(spell_transformer(get_test_spells()))
 
+    print("\nTesting mage stats...")
     print(mage_stats(get_test_mages()))
 
 
