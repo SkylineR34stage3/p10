@@ -1,4 +1,5 @@
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from random import choice
 
 
 def mage_counter() -> Callable:
@@ -19,6 +20,10 @@ def spell_accumulator(initial_power: int) -> Callable:
     return accumulate
 
 
+def enchantment_factory(enchantment_type: str) -> Callable:
+    return lambda item: f"{enchantment_type} {item}"
+
+
 def test_mage_counter() -> None:
     print("Testing mage counter...")
     counter_a = mage_counter()
@@ -37,10 +42,30 @@ def test_spell_accumulator(base: int) -> None:
     print(f"Base {base}, add 30: {accumulator(30)}")
 
 
+def enchantment_generator(types: list[str], items: list[str]) -> Iterator[str]:
+    while True:
+        enchantment = choice(types)
+        item = choice(items)
+        enchantment_applier = enchantment_factory(enchantment)
+        yield enchantment_applier(item)
+
+
+def test_enchantment_factory(item_count: int) -> None:
+    print("\nTesting Enchantment Factory")
+    enchantment_types = ['Radiant', 'Windy', 'Shocking']
+    items_to_enchant = ['Armor', 'Wand', 'Shield', 'Staff']
+
+    gen = enchantment_generator(enchantment_types, items_to_enchant)
+    for _ in range(item_count):
+        print(next(gen))
+
+
 def main() -> None:
     test_mage_counter()
 
     test_spell_accumulator(100)
+
+    test_enchantment_factory(5)
 
 
 if __name__ == "__main__":
