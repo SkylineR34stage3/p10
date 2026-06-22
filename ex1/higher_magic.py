@@ -23,7 +23,7 @@ def spell_combiner(spell1: Callable, spell2: Callable) -> Callable:
 
 
 def power_amplifier(base_spell: Callable, multiplier: int) -> Callable:
-    return lambda target, power: (base_spell(target, power * multiplier))
+    return lambda target, power: base_spell(target, power * multiplier)
     # def amplified(target: str, power: int) -> str:
     #     return base_spell(target, power * multiplier)
     # return amplified
@@ -36,6 +36,13 @@ def conditional_caster(condition: Callable, spell: Callable) -> Callable:
     #         return spell(target, power)
     #     return "Spell fizzled"
     # return guarded
+
+
+def spell_sequence(spells: list[Callable]) -> Callable:
+    return lambda e, x: [s(e, x) for s in spells]
+    # def sequential(target: str, power: int) -> list[str]:
+    #     return [s(target, power) for s in spells]
+    # return sequential
 
 
 def main() -> None:
@@ -52,6 +59,10 @@ def main() -> None:
     spell = conditional_caster(condition, fireball)
     for _ in range(5):
         print(spell("Dragon", 34))
+
+    print("\nTesting spell sequence...")
+    sequential = spell_sequence([heal, fireball, fireball, heal])
+    print(sequential("Dragon", 10))
 
 
 if __name__ == "__main__":
