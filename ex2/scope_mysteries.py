@@ -60,12 +60,37 @@ def test_enchantment_factory(item_count: int) -> None:
         print(next(gen))
 
 
+def memory_vault() -> dict[str, Callable]:
+    memory: dict[str, object] = {}
+    return {
+        "store": lambda key, value: memory.update({key: value}),
+        "recall": lambda key: memory.get(key, "Memory not found")
+    }
+    # def store(key: str, value: str) -> None:
+    #     memory[key] = value
+    # def recall(key: str) -> str:
+    #     return memory.get(key, "Memory not found")
+    # return {"store": store, "recall": recall}
+
+
+def test_memory_vault() -> None:
+    print("\nTesting memory vault...")
+    vault = memory_vault()
+
+    print("Store 'secret' = 42")
+    vault["store"]("secret", 42)
+    print(f"Recall 'secret': {vault['recall']('secret')}")
+    print(f"Recall 'unknown': {vault['recall']('unknown')}")
+
+
 def main() -> None:
     test_mage_counter()
 
     test_spell_accumulator(100)
 
     test_enchantment_factory(5)
+
+    test_memory_vault()
 
 
 if __name__ == "__main__":
