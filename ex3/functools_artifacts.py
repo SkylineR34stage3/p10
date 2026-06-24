@@ -1,4 +1,4 @@
-from functools import reduce, partial
+from functools import reduce, partial, lru_cache
 from operator import add, mul
 from collections.abc import Callable
 
@@ -30,6 +30,13 @@ def partial_enchanter(base_enchantment: Callable) -> dict[str, Callable]:
     }
 
 
+@lru_cache
+def memoized_fibonacci(n: int) -> int:
+    if n <= 1:
+        return n
+    return memoized_fibonacci(n - 1) + memoized_fibonacci(n - 2)
+
+
 def test_spell_reducer() -> None:
     print("Testing spell reducer...")
     spell_powers = [23, 35, 33, 32, 32, 40]
@@ -50,10 +57,20 @@ def test_partial_enchanter() -> None:
     print(enchantments["skibidi"]("Tung Tung Sahur"))
 
 
+def test_memoized_fibonacci() -> None:
+    print("\nTesting memoized fibonacci...")
+    print("Fib(0):", memoized_fibonacci(0), memoized_fibonacci.cache_info())
+    print("Fib(1):", memoized_fibonacci(1), memoized_fibonacci.cache_info())
+    print("Fib(10):", memoized_fibonacci(10), memoized_fibonacci.cache_info())
+    print("Fib(15):", memoized_fibonacci(15), memoized_fibonacci.cache_info())
+
+
 def main() -> None:
     test_spell_reducer()
 
     test_partial_enchanter()
+
+    test_memoized_fibonacci()
 
 
 if __name__ == "__main__":
