@@ -15,6 +15,18 @@ def spell_timer(func: Callable) -> Callable:
     return wrapper
 
 
+def power_validator(min_power: int) -> Callable:
+    def decorator(func: Callable) -> Callable:
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            power = args[0]
+            if power >= min_power:
+                return func(*args, **kwargs)
+            return "Insufficient power for this spell"
+        return wrapper
+    return decorator
+
+
 class MageGuild:
     @staticmethod
     def validate_mage_name(name: str) -> bool:
@@ -31,13 +43,26 @@ def test_spell_timer() -> None:
     def slow_fireball(target: str, power: int) -> str:
         time.sleep(0.228)
         return f"Fireball hits {target} for {power} damage"
-    
+
     result = slow_fireball("Dragon", 50)
     print("Result:", result)
 
 
+def test_power_validator() -> None:
+    print("\nTesting power validator")
+
+    @power_validator(10)
+    def cast(power: int, target: str) -> str:
+        return f"Hit {target} with {power} power"
+
+    print(cast(15, "Dragon"))
+    print(cast(5, "Dragon"))
+
+
 def main() -> None:
     test_spell_timer()
+
+    test_power_validator()
 
 
 if __name__ == "__main__":
