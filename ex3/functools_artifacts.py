@@ -65,6 +65,10 @@ def test_spell_reducer() -> None:
     for op in operations:
         print(f"{op.capitalize()} of {spell_powers}:",
               spell_reducer(spell_powers, op))
+    try:
+        spell_reducer(spell_powers, "divide")
+    except InvalidOperation as e:
+        print(e)
 
 
 def test_partial_enchanter() -> None:
