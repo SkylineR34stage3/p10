@@ -1,6 +1,7 @@
-from functools import reduce, partial, lru_cache
+from functools import reduce, partial, lru_cache, singledispatch
 from operator import add, mul
 from collections.abc import Callable
+from typing import Any
 
 
 class InvalidOperation(Exception):
@@ -37,6 +38,26 @@ def memoized_fibonacci(n: int) -> int:
     return memoized_fibonacci(n - 1) + memoized_fibonacci(n - 2)
 
 
+def spell_dispatcher() -> Callable[[Any], str]:
+    @singledispatch
+    def dispatch(spell) -> str:
+        return "Unknown spell type"
+
+    @dispatch.register(int)
+    def _(spell: int) -> str:
+        return f"Damage spell: {spell} damage"
+
+    @dispatch.register(str)
+    def _(spell: str) -> str:
+        return f"Enchantment: {spell}"
+
+    @dispatch.register(list)
+    def _(spell: list) -> str:
+        return f"Multi-cast: {len(spell)} spells"
+
+    return dispatch
+
+
 def test_spell_reducer() -> None:
     print("Testing spell reducer...")
     spell_powers = [23, 35, 33, 32, 32, 40]
@@ -65,12 +86,24 @@ def test_memoized_fibonacci() -> None:
     print("Fib(15):", memoized_fibonacci(15), memoized_fibonacci.cache_info())
 
 
+def test_spell_dispatcher() -> None:
+    print("\nTesting spell dispatcher...")
+
+    dispatch = spell_dispatcher()
+    print(dispatch(42))
+    print(dispatch("Skibidi"))
+    print(dispatch([1, 2, 3]))
+    print(dispatch(3.14))
+
+
 def main() -> None:
     test_spell_reducer()
 
     test_partial_enchanter()
 
     test_memoized_fibonacci()
+
+    test_spell_dispatcher()
 
 
 if __name__ == "__main__":
